@@ -37,12 +37,13 @@ Write in poetic language, with short paragraphs and page breaks.
 End with: "The End. Sleep well, ${childName}." followed by a gentle reflection question for parents.
 `;
 
-    const completion = await openai.createChatCompletion({
-      model: "gpt-4o-mini",
-      messages: [{ role: "user", content: prompt }],
-      temperature: 0.7,
-      max_tokens: 700,
-    });
+  const completion = await openai.createChatCompletion({
+  model: "gpt-3.5-turbo",
+  messages: [{ role: "user", content: prompt }],
+  temperature: 0.7,
+  max_tokens: 700,
+});
+
 
     const story = completion.data.choices[0].message.content;
 
