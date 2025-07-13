@@ -1,14 +1,17 @@
-// netlify/functions/generateStory.js
 import { Configuration, OpenAIApi } from "openai";
 
 const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY, // Sicher in Netlify-Umgebung definieren
+  apiKey: process.env.OPENAI_API_KEY,
 });
 const openai = new OpenAIApi(configuration);
 
 export async function handler(event) {
   if (event.httpMethod !== "POST") {
-    return { statusCode: 405, body: "Method Not Allowed" };
+    return {
+      statusCode: 405,
+      headers: { "Allow": "POST" },
+      body: "Method Not Allowed",
+    };
   }
 
   try {
@@ -17,6 +20,7 @@ export async function handler(event) {
     if (!childName || !theme) {
       return {
         statusCode: 400,
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ error: "Missing childName or theme" }),
       };
     }
@@ -44,12 +48,19 @@ End with: "The End. Sleep well, ${childName}." followed by a gentle reflection q
 
     return {
       statusCode: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json"
+      },
       body: JSON.stringify({ story }),
     };
   } catch (error) {
+    console.error(error);
     return {
       statusCode: 500,
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ error: error.message }),
     };
   }
 }
+
